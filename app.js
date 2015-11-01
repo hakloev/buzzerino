@@ -21,7 +21,7 @@ nunjucks.configure('views', {
 
 // Express configuration
 app.use(express.static(__dirname + '/bower_components'))
-app.use(express.static(__dirname + 'public'));
+app.use(express.static(__dirname + '/public'));
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
@@ -37,7 +37,8 @@ app.get('/', function(req, res, next) {
 
 app.get('/buzz', function(req, res, next) {
 	if (!admin_socket) {
-		res.status(400).send('Buzzerino Adminirano has not started the game yet')
+		res.status(400)
+		res.render('error.html', { error: 'Buzzerino Adminirano has not connected yet' })
 		return
 	}
 
@@ -54,7 +55,7 @@ app.get('/buzz/admin', function(req, res, next) {
 		res.redirect('/buzz/auth')
 		return
 	} 
-	res.render('admin.html', { title: 'Buzzerino Adminirano', players: players.sockets.length })
+	res.render('admin.html', { title: 'Buzzerino Adminirano', teams: teams.sockets.length })
 })
 
 app.get('/buzz/auth', function(req, res, next) {
@@ -79,43 +80,43 @@ var admin = io
 	.of('/admin')
 	.on('connection', function(socket) {
 		console.log('Admin Connected')
-		if (players.sockets.length > 0) {
-			players.emit('admin-reconnect') // activate button, admin reconnect
+		if (teams.sockets.length > 0) {
+			teams.emit('admin-reconnect') // activate button, admin reconnect
 		}
 		admin_socket = socket
 		
 		socket.on('reset', function(data) {
 			console.log('Admin demanding reset')
-			players.emit('reset')
+			teams.emit('reset')
 		})
 
 		socket.on('disconnect', function() {
 			console.log('Admin disconnected')
-			players.emit('admin-disconnect')
+			teams.emit('admin-disconnect')
 			admin_socket = null
 		})
 	})
 
-var players = io
-	.of('/players')
+var teams = io
+	.of('/teams')
 	.on('connection', function(socket) {
 		if (!admin_socket) {
 			console.log('No admin connected yet')
 			return
 		}
-		console.log('Player connected')
-		admin.emit('players', { players: players.sockets.length })
+		console.log('Team connected')
+		admin.emit('team-connect', { teams: teams.sockets.length })
 
 		socket.on('buzz-from', function(data) {
 			var buzzTime = new Date().getTime()
-			console.log('User buzzed at ' + buzzTime)
+			console.log('Team buzzed at ' + buzzTime)
 			data.time = buzzTime
 			admin.emit('buzz-from', data)
 		})
 
 		socket.on('disconnect', function() {
-			console.log('User disconnected')
-			admin.emit('players', { players: players.sockets.length })
+			console.log('Team disconnected')
+			admin.emit('team-disconnect', { teams: teams.sockets.length })
 		})
 	})
 

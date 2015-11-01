@@ -3,24 +3,32 @@
 {% block content %}
 <div class="row">
 	<div class="col s12">
-		<h1>Hi, Jepordino Cappucino Game Master</h1> 
-		<a class="btn-large" id="reset">Reset</a>
-		<table>
-			<thead>
-				<th>ID:</th>
-				<th>NAME:</th>
-				<th>BUZZED AT: </th>
-			</thead>
-			<tbody id="buzzing-table">
-			</tbody>
-		</table>
-		<p>Connected players: <span id="players">{{ players }}</span></p>
+		<h1>Adminirano Panel</h1> 
+		<div class="section">
+			<h3>Buzzer Table</h3>
+			<table>
+				<thead>
+					<th>ID:</th>
+					<th>NAME:</th>
+					<th>BUZZED AT: </th>
+				</thead>
+				<tbody id="buzzing-table">
+				</tbody>
+			</table>
+			<p>Connected teams: <span id="teams">{{ teams }}</span></p>
+			<a class="btn-large" id="reset">New round</a>
+		</div>
 	</div>
 </div>
+<div class="divider"></div>
 <div class="row">
 	<div class="col s12">
-		<button class="btn-large" id="counter">Add point</button>
-		<h1>Points: <span id="points-counter">0</span></h1>
+		<div class="section">
+			<h3>Bonush Quesht Counter</h3>
+			<h4>Points: <span id="points-counter">0</span></h4>
+			<button class="btn-large" id="counter">Add point</button>
+			<button class="btn-large" id="counter-reset">Reset</button>
+		</div>
 	</div>
 </div>
 {% endblock %}
@@ -44,23 +52,33 @@
 
 	})
 
-	socket.on('players', function(data) {
-		console.log('New player count, is now: ' + data.players)
-		$('#players').html(data.players)
-		Materialize.toast('New player count: ' + data.players, 4000)
+	socket.on('team-connect', function(data) {
+		console.log('New team connected, count is now: ' + data.teams)
+		$('#teams').html(data.teams)
+		Materialize.toast('New team arrived (' + data.teams + ')', 4000)
+	})
+
+	socket.on('team-disconnect', function(data) {
+		console.log('Team disconnected, count is now: ' + data.teams)
+		$('#teams').html(data.teams)
+		Materialize.toast('Team disconnected: (' + data.teams + ')', 4000)
+
 	})
 
 	$('#reset').on('click', function(e) {
 		console.log('Demanding reset')
 		socket.emit('reset')
 		buzzId = 0
-		counter = 1
-		$('#points-counter').html('0')
 		$('table tbody').empty()
 	})
 	
 	$('#counter').on('click', function(e) {
 		$('#points-counter').html(counter++)
+	})
+
+	$('#counter-reset').on('click', function(e) {
+		counter = 1
+		$('#points-counter').html('0')
 	})
 </script>
 {% endblock %}
