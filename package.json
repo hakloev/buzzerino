@@ -1,0 +1,26 @@
+{
+  "name": "buzzerino",
+  "version": "1.0.0",
+  "description": "A Game Show buzzer to use with e.g. Bergalergas Jeopardino Cappoucino",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "gameshow",
+    "buzzer",
+    "socket"
+  ],
+  "author": "Håkon Ødegård Løvdal",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "cookie-parser": "^1.4.0",
+    "express": "^4.13.3",
+    "nunjucks": "^2.1.0",
+    "say": "^0.6.0",
+    "says": "^1.0.2",
+    "sha1": "^1.1.1",
+    "socket.io": "^1.3.7"
+  }
+}

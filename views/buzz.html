@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col s12">
+		<h1>Team: {{ name }}</h1>
+		<button class="btn-large" id="buzzer">BUZZ</button>
+	</div>
+</div>
+{% endblock %}
+{% block socketio %}
+<script>
+	var socket = io.connect('http://localhost:4200/players')
+	
+	socket.on('connect', function(data) {
+		console.log('Connected to socket')
+	})
+
+	socket.on('reset', function(data) {
+		console.log('Got reset request')
+		$('#buzzer').attr('disabled', false)
+		$('#buzzer').removeClass('disabled')
+	})
+
+	socket.on('admin-reconnect', function() {
+		$('#buzzer').attr('disabled', false)
+		$('#buzzer').removeClass('disabled')	
+		Materialize.toast('Buzzerino Adminirano reconnected', 4000)
+	})	
+
+	socket.on('admin-disconnect', function() {
+		$('#buzzer').attr('disabled', true)
+		$('#buzzer').addClass('disabled')
+		Materialize.toast('Buzzerino Adminirano disconnected', 4000)	
+	})
+</script>
+<script>
+	var name = '{{ name }}'
+	var buzzerButton = $("#buzzer")
+	
+	$(buzzerButton).on('click', function(e) {
+		socket.emit('buzz-from', { name: name })
+		$(this).attr('disabled', true)
+		$(this).addClass('disabled')
+	})
+</script>
+{% endblock %}

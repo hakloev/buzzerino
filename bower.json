@@ -1,0 +1,22 @@
+{
+  "name": "buzzerino",
+  "description": "A Game Show buzzer to use with e.g. Bergalergas Jeopardino Cappoucino",
+  "main": "app.js",
+  "authors": [
+    "Håkon Ødegård Løvdal"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "gameshow",
+    "buzzer",
+    "socket"
+  ],
+  "moduleType": [
+    "node"
+  ],
+  "homepage": "",
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "Materialize": "materialize#~0.97.1"
+  }
+}

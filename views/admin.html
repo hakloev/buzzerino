@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+	<div class="col s12">
+		<h1>Hi, Jepordino Cappucino Game Master</h1> 
+		<a class="btn-large" id="reset">Reset</a>
+		<table>
+			<thead>
+				<th>ID:</th>
+				<th>NAME:</th>
+				<th>BUZZED AT: </th>
+			</thead>
+			<tbody id="buzzing-table">
+			</tbody>
+		</table>
+		<p>Connected players: <span id="players">{{ players }}</span></p>
+	</div>
+</div>
+<div class="row">
+	<div class="col s12">
+		<button class="btn-large" id="counter">Add point</button>
+		<h1>Points: <span id="points-counter">0</span></h1>
+	</div>
+</div>
+{% endblock %}
+
+{% block socketio %}
+<script>
+	var socket = io.connect('http://localhost:4200/admin')
+	var buzzId = 0
+	var counter = 1
+
+	socket.on('connect', function(data) {
+		console.log('Connected to socket')
+	})
+	
+	socket.on('buzz-from', function(data) {
+		console.log('buzz-from: ' + data)
+		var time = new Date(data.time)
+		var timeString = time.getHours() + ':' + time.getMinutes() + ':' + time.getSeconds() + ':' + time.getMilliseconds()
+		var newBuzzRow = '<tr><td>' + buzzId++ + '</td><td>' + data.name + '</td><td>' + timeString + '</td></tr>'
+		$('table tbody').append(newBuzzRow)
+
+	})
+
+	socket.on('players', function(data) {
+		console.log('New player count, is now: ' + data.players)
+		$('#players').html(data.players)
+		Materialize.toast('New player count: ' + data.players, 4000)
+	})
+
+	$('#reset').on('click', function(e) {
+		console.log('Demanding reset')
+		socket.emit('reset')
+		buzzId = 0
+		counter = 1
+		$('#points-counter').html('0')
+		$('table tbody').empty()
+	})
+	
+	$('#counter').on('click', function(e) {
+		$('#points-counter').html(counter++)
+	})
+</script>
+{% endblock %}
