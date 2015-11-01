@@ -7,6 +7,7 @@ var nunjucks = require('nunjucks')
 var server = require('http').createServer(app)
 var io = require('socket.io')(server)
 
+var HOST = "0.0.0.0"
 var PORT = 4200
 var PASSWORD = ''
 var ADMIN_TOKEN = sha1(Math.random() + 'admin_token')
@@ -71,8 +72,8 @@ app.post('/buzz/auth', function(req, res, next) {
 	}
 })
 
-server.listen(PORT, function() {
-	console.log('Buzzerino-server listening on port: ' + PORT)
+server.listen(PORT, HOST, function() {
+	console.log('Buzzerino-server listening on: ' + HOST + ':' + PORT)
 })
 
 // Socket IO
