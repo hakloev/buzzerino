@@ -1,6 +1,7 @@
-var socket = io.connect('http://localhost:4200/admin')
+var socket = io.connect('http://' + document.location.host + '/admin')
 var buzzId = 0
 var counter = 1
+alert('http://' + document.location.host + '/admin')
 
 // Socket IO
 socket.on('connect', function(data) {
