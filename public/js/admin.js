@@ -1,7 +1,6 @@
-var socket = io.connect('http://' + document.location.host + '/admin')
+var socket = io.connect(document.location.protocol + '//' + document.location.host + '/admin')
 var buzzId = 0
 var counter = 1
-alert('http://' + document.location.host + '/admin')
 
 // Socket IO
 socket.on('connect', function(data) {
@@ -49,5 +48,9 @@ $('#counter').on('click', function(e) {
 $('#counter-reset').on('click', function(e) {
 	$('#points-counter').html('0')
 	counter = 1
+})
+
+$('#countdownr-button').on('click', function(e) {
+	Countdownr.startWithTime(60)
 })
 

@@ -1,6 +1,5 @@
-var socket = io.connect('http://' + document.location.host + '/teams')
+var socket = io.connect(document.location.protocol + '//' + document.location.host + '/teams')
 var buzzerButton = $("#buzzer")
-alert(document.location.host)
 
 // Socket IO
 socket.on('connect', function(data) {
