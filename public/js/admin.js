@@ -1,4 +1,4 @@
-var socket = io.connect(document.location.protocol + '//' + document.location.host + '/admin')
+var socket = io.connect(document.location.protocol + '//' + document.location.host + '/admins')
 var buzzId = 0
 var counter = 1
 

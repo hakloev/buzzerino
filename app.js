@@ -12,7 +12,7 @@ var COOKIE_SECRET = sha1(Math.random() + 'admin_token'),
 	COOKIE_NAME = 'admin_token',
 	HOST = '0.0.0.0',
 	PORT = 4200,
-	ADMIN_PASSWORD = ''
+	ADMIN_PASSWORD = 'oppdal'
 
 var admin_socket = null
 
@@ -54,13 +54,6 @@ app.get('/buzz', function(req, res) {
 })
 
 app.get('/admin', function(req, res) {
-	if (admin_socket) {
-		debug('Tried to access /admin, but there already exists an admin')
-		res.status(400)
-		res.render('error.html', { error: 'There already exists a Buzzerino Adminirano' })
-		return
-	} 
-
 	if (req.cookies[COOKIE_NAME] != COOKIE_SECRET) {
 		debug(COOKIE_NAME + ' was invalid')
 		res.redirect('/auth')
@@ -75,27 +68,24 @@ app.get('/auth', function(req, res) {
 
 app.post('/auth', function(req, res) {
 	if (req.body.password === ADMIN_PASSWORD) {
-		debug('Wrong password')
 		res.cookie(COOKIE_NAME, COOKIE_SECRET)
 		res.redirect('/admin')
 	} else {
+		debug('Wrong password')
 		res.redirect('/auth')
 	}
 })
 
 // Socket IO
 var admin = io
-	.of('/admin')
+	.of('/admins')
 	.on('connection', function(socket) {
 		debug('Admin Connected')
 		if (teams.sockets.length > 0) {
 			teams.emit('admin-reconnect') // activate button, admin reconnect
 		}
 		
-		if (!admin_socket) {
-			debug('New admin')
-			admin_socket = socket
-		}
+		admin_socket = socket
 		
 		socket.on('reset', function(data) {
 			debug('Admin demanding reset')
